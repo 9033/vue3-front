@@ -8,7 +8,8 @@ import Input2 from './Input2.vue';
 import Result from './Result.vue';
 import Tab from './Tab.vue';
 import { Paper } from '../types/paper';
-
+import { useRouter, useRoute } from 'vue-router';
+const [route, router] = [useRoute(), useRouter()]
 const tab = ref<string>('Input1')
 const tabs = [
   'Input1',
@@ -18,6 +19,15 @@ const tabs = [
 
 const tabChange = (tabName: string) => {
   tab.value = tabName
+  // change url
+  router.push({
+    params: {
+      tabName: tabName,
+    },
+    query: {
+      ...route.query,
+    },
+  })
 }
 
 // 초기값 없어도 됨

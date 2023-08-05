@@ -1,23 +1,39 @@
 <script setup lang="ts">
-// import HelloWorld from './components/HelloWorld.vue'
-import FormWithTab from './components/FormWithTab.vue';
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+// const route = useRoute()
+const router = useRouter()
+
+const routes = computed(router.getRoutes)
+
+onMounted(()=>{
+  /*
+  // go to the first route
+  const routes = router.getRoutes()
+  if(routes?.[0])router.push(routes[0])
+  */
+})
 </script>
 
 <template>
-  <FormWithTab/>
+  <div class="route">
+    <template v-for="route in routes" :key="route.path">
+      <router-link :to="route" v-if="route.name">
+        <button type="button">{{route.name}}</button>
+      </router-link>
+    </template>
+  </div>
+  <router-view></router-view>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+div.route {
+  min-height: calc(64px - 8px - 8px);
+  margin-top: 8px;
+  margin-bottom: 0px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+div.route > *:not(:last-child){
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 </style>
