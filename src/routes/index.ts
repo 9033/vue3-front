@@ -10,6 +10,15 @@ route.push({
   )
 })
 
+route.push({
+  name: 'Genshin Impact',
+  path: '/genshin-impact',
+  component: () => import(
+    /* webpackChunkName: "GenshinImpact" */
+    '../components/GenshinImpact.vue'
+  )
+})
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
