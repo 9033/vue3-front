@@ -3,7 +3,7 @@
 테그 나 페이지 변경시 이미 로드된 섬네일이 다시 로드되지 않게 하려고 v-show 사용
 코드에 ''과 ,를 입력하는 수고를 덜기위해 데이터를 split로 배열로 변환
 */
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Content } from "../types/embed.ts";
 import range from "../script/range";
 const props = defineProps({
@@ -28,12 +28,9 @@ const toggleSelectTag = (tag: string) => {
     // select
     selectedTags.value.push(tag);
   }
-};
-
-// 테그 변경시 1 페이지로 이동
-watch(selectedTags, () => {
+  // 테그 변경시 1 페이지로 이동
   page.value = 1;
-});
+};
 
 // const showMethodOr = (content: Content) => {
 //   return content.tags.find(tag => selectedTags.value.includes(tag))
