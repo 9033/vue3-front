@@ -67,6 +67,11 @@ const contents: Content[] = [
     url: "https://www.youtube.com/embed/4y8rDczyY3w",
     tags: "Kokomi Klee".split(" "),
   },
+  {
+    type: "youtube",
+    url: "https://www.youtube.com/embed/aAeGYsUs5lo",
+    tags: "Lumine Nahida".split(" "),
+  },
 ];
 </script>
 
