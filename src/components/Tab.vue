@@ -2,16 +2,21 @@
 탭
 -->
 <script setup lang="ts">
-defineProps<{ tab: string, tabs: string[] }>()
+defineProps<{ tab: string; tabs: string[] }>();
 </script>
 
 <template>
   <div>
-    <p v-for="tab in tabs"
-      @click="()=>{
-        $emit('change',tab)
-      }"
-    >{{tab}}</p>
+    <p
+      v-for="tab in tabs"
+      @click="
+        () => {
+          $emit('change', tab);
+        }
+      "
+    >
+      {{ tab }}
+    </p>
   </div>
 </template>
 

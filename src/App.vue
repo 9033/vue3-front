@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 // const route = useRoute()
-const router = useRouter()
+const router = useRouter();
 
-const routes = computed(router.getRoutes)
+const routes = computed(router.getRoutes);
 
-onMounted(()=>{
+onMounted(() => {
   /*
   // go to the first route
   const routes = router.getRoutes()
   if(routes?.[0])router.push(routes[0])
   */
-})
+});
 </script>
 
 <template>
   <div class="route">
     <template v-for="route in routes" :key="route.path">
       <router-link :to="route" v-if="route.name">
-        <button type="button">{{route.name}}</button>
+        <button type="button">{{ route.name }}</button>
       </router-link>
     </template>
   </div>
@@ -32,7 +32,7 @@ div.route {
   margin-top: 8px;
   margin-bottom: 0px;
 }
-div.route > *:not(:last-child){
+div.route > *:not(:last-child) {
   margin-right: 8px;
   margin-bottom: 8px;
 }
