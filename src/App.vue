@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-// const route = useRoute()
+import { useRoute, useRouter } from "vue-router";
+const _route = useRoute();
 const router = useRouter();
 
 const routes = computed(router.getRoutes);
@@ -19,7 +19,12 @@ onMounted(() => {
   <div class="route">
     <template v-for="route in routes" :key="route.path">
       <router-link :to="route" v-if="route.name">
-        <button type="button">{{ route.name }}</button>
+        <button
+          type="button"
+          :class="{ 'selected-tag': _route.name === route.name }"
+        >
+          {{ route.name }}
+        </button>
       </router-link>
     </template>
   </div>
@@ -35,5 +40,8 @@ div.route {
 div.route > *:not(:last-child) {
   margin-right: 8px;
   margin-bottom: 8px;
+}
+.selected-tag {
+  color: red;
 }
 </style>
