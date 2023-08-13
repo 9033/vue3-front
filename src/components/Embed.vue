@@ -3,7 +3,7 @@
 테그 나 페이지 변경시 이미 로드된 섬네일이 다시 로드되지 않게 하려고 v-show 사용
 코드에 ''과 ,를 입력하는 수고를 덜기위해 데이터를 split로 배열로 변환
 */
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { Content } from "../types/embed.ts";
 import range from "../script/range";
 const props = defineProps({
@@ -81,6 +81,31 @@ const list_page = computed((): number[] => {
 const total_list_idx = computed((): number[] => {
   return range(0, props.contents.length);
 });
+
+import YoutubeContainer from "./YoutubeContainer.vue";
+
+// 컨테이너 크기 반응형
+// 컨테이너를 보여주는 목록의 크기를 바탕으로 각 컨테이너의 크기를 지정.
+// 그리고 각 컨테이너별로 size를 조절하지 않음, 컨테이너별로 조정을 하면 v-show 가 false일때 넓이나 높이 값이 0이 나옴, 각 컨테이너 별로 이벤트 발생 후에 로직이 돌아가서 속도도 느림
+const containerWidth = ref("560");
+const containerHeigth = ref("315");
+const setContainerSize = (containerWrapper: Element) => {
+  const width = Math.min(560, containerWrapper.clientWidth);
+  // console.log({ width });
+  containerWidth.value = `${width}`;
+  containerHeigth.value = `${(width / 16) * 9}`; // 16:9
+};
+const resize = () => {
+  const containerWrapper = window.document.querySelector(".container-list");
+  if (!containerWrapper) return;
+  setContainerSize(containerWrapper);
+};
+onMounted(() => {
+  resize();
+  window.addEventListener("resize", () => {
+    resize();
+  });
+});
 </script>
 
 <template>
@@ -104,20 +129,16 @@ const total_list_idx = computed((): number[] => {
       {{ _page }}
     </button>
   </div>
-  <div class="list">
+  <div class="list container-list">
     <!-- <component :is="c"></component> -->
     <template v-for="idx in total_list_idx">
       <template v-if="contents[idx].type === 'youtube'">
-        <iframe
+        <YoutubeContainer
           v-show="paged_idx_of_contents.includes(idx)"
-          width="560"
-          height="315"
+          :width="containerWidth"
+          :height="containerHeigth"
           :src="contents[idx].url"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+        />
       </template>
       <template v-else>
         <p v-show="paged_idx_of_contents.includes(idx)">

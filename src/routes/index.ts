@@ -34,7 +34,8 @@ route.push({
 route.push({
   path: "/",
   redirect: {
-    name: route.at(0)?.name,
+    // name: route.at(0)?.name,
+    name: "Genshin Impact",
   },
 });
 
