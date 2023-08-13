@@ -2,6 +2,26 @@ import { RouteRecordRaw } from "vue-router";
 const route = [];
 
 route.push({
+  name: "First Page",
+  path: "/first",
+  component: () =>
+    import(
+      /* webpackChunkName: "FirstPage" */
+      "../components/FirstPage.vue"
+    ),
+});
+
+route.push({
+  name: "Real estate",
+  path: "/real-estate",
+  component: () =>
+    import(
+      /* webpackChunkName: "RealEstate" */
+      "../components/RealEstate.vue"
+    ),
+});
+
+route.push({
   name: "Form With Tab",
   path: "/form-with-tab/:tabName?",
   component: () =>
@@ -35,7 +55,7 @@ route.push({
   path: "/",
   redirect: {
     // name: route.at(0)?.name,
-    name: "Genshin Impact",
+    name: "First Page",
   },
 });
 
