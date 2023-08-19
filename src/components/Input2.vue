@@ -14,7 +14,7 @@ const change = (e: Event): void => {
 </script>
 
 <template>
-  age: <input type="number" :value="data.age" @input="change" />
+  <input type="number" :value="data.age" @input="change" />
 </template>
 
 <style scoped></style>

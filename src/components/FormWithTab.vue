@@ -2,7 +2,7 @@
 자삭으로 입력 컴포넌트가 있는 컴포넌트
 -->
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Input1 from "./Input1.vue";
 import Input2 from "./Input2.vue";
 import Result from "./Result.vue";
@@ -12,8 +12,8 @@ import { useRouter, useRoute } from "vue-router";
 const [route, router] = [useRoute(), useRouter()];
 const tab = ref<string>("Input1");
 const tabs = [
-  "Input1",
-  "Input2",
+  "name",
+  "age",
   // 'Result',
 ];
 
@@ -29,6 +29,10 @@ const tabChange = (tabName: string) => {
     },
   });
 };
+
+onMounted(() => {
+  tabChange(tabs[0]);
+});
 
 // 초기값 없어도 됨
 const data = ref<Partial<Paper>>({
@@ -56,79 +60,53 @@ const change = (draft: Partial<Paper>) => {
 </script>
 
 <template>
-  <Tab :tab="tab" :tabs="tabs" @change="tabChange" />
-  <table>
-    <tr>
-      <td>data</td>
-      <td>
-        <div v-if="tab === 'Input1'">
-          <Input1 :data="data" @change="change" />
-        </div>
-        <div v-else-if="tab === 'Input2'">
-          <Input2 :data="data" @change="change" />
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>data2</td>
-      <td>
-        <div v-if="tab === 'Input1'">
-          <Input1 :data="data2" @change="change" />
-        </div>
-        <div v-else-if="tab === 'Input2'">
-          <Input2 :data="data2" @change="change" />
-        </div>
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td>data</td>
-      <td>
-        <Result :data="data" />
-      </td>
-    </tr>
-    <tr>
-      <td>data2</td>
-      <td>
-        <Result :data="data2" />
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <th colspan="2">data</th>
-    </tr>
-    <tr>
-      <td>Input1</td>
-      <td>
-        <Input1 :data="data" @change="change" />
-      </td>
-    </tr>
-    <tr>
-      <td>Input2</td>
-      <td>
-        <Input2 :data="data" @change="change" />
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <th colspan="2">data2</th>
-    </tr>
-    <tr>
-      <td>Input1</td>
-      <td>
-        <Input1 :data="data2" @change="change" />
-      </td>
-    </tr>
-    <tr>
-      <td>Input2</td>
-      <td>
-        <Input2 :data="data2" @change="change" />
-      </td>
-    </tr>
-  </table>
+  <section class="tab">
+    <Tab :tab="tab" :tabs="tabs" @change="tabChange" />
+  </section>
+  <template v-if="tab === tabs[0]">
+    <section>
+      <label for="data_name">data.name: </label>
+      <Input1 id="data_name" :data="data" @change="change" />
+    </section>
+    <section>
+      <label for="data2_name">data2.name: </label>
+      <Input1 id="data2_name" :data="data2" @change="change" />
+    </section>
+  </template>
+  <template v-else-if="tab === tabs[1]">
+    <section>
+      <label for="data_age">data.age: </label>
+      <Input2 id="data_age" :data="data" @change="change" />
+    </section>
+    <section>
+      <label for="data2_age">data2.age: </label>
+      <Input2 id="data2_age" :data="data2" @change="change" />
+    </section>
+  </template>
+  <section>
+    <table class="result">
+      <tr>
+        <td>data</td>
+        <td>
+          <Result :data="data" />
+        </td>
+      </tr>
+      <tr>
+        <td>data2</td>
+        <td>
+          <Result :data="data2" />
+        </td>
+      </tr>
+    </table>
+  </section>
+  <section>
+    <ul>
+      <li>하위 컴포넌트에서 값을 변경하는 경우 상위 컴포넌트에 반영되어야함</li>
+      <li>data의 값이 바뀌는 경우 data2의 값도 같이 바뀌어야함.</li>
+      <li>탭을 변경해도 data나 data2의 값이 변경되지 않아야함.</li>
+      <li>초기값을 지정한 경우 하위 컴포넌트의 입력란에 반영 되어야함</li>
+    </ul>
+  </section>
   <!-- <component :is="tab" :data="data" @change="change"></component> -->
   <!-- <Input1 v-if="tab === 'Input1'" :data="data" @change="change"/>
   <Input2 v-else-if="tab === 'Input2'" :data="data" @change="change"/> -->
@@ -136,13 +114,19 @@ const change = (draft: Partial<Paper>) => {
 </template>
 
 <style scoped>
-th,
+section {
+  width: 600px;
+}
+section,
 td {
   border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 8px;
   margin: 0;
 }
-table:not(:last-child) {
+section:not(:last-child) {
   margin-bottom: 32px;
+}
+section > label {
+  width: 200px;
 }
 </style>

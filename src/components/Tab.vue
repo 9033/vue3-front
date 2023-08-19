@@ -8,14 +8,15 @@ defineProps<{ tab: string; tabs: string[] }>();
 <template>
   <div>
     <p
-      v-for="tab in tabs"
+      v-for="_tab in tabs"
+      :class="{ selected: _tab === tab }"
       @click="
         () => {
-          $emit('change', tab);
+          $emit('change', _tab);
         }
       "
     >
-      {{ tab }}
+      {{ _tab }}
     </p>
   </div>
 </template>
@@ -33,5 +34,8 @@ div > p {
 }
 div > p:not(:last-child) {
   margin-right: 8px;
+}
+.selected {
+  color: red;
 }
 </style>

@@ -13,6 +13,6 @@ const change = (e: Event): void => {
 };
 </script>
 
-<template>name: <input :value="data.name" @input="change" /></template>
+<template><input :value="data.name" @input="change" /></template>
 
 <style scoped></style>
