@@ -41,6 +41,16 @@ route.push({
     ),
 });
 
+route.push({
+  name: "D3 Canvas",
+  path: "/d3-canvas",
+  component: () =>
+    import(
+      /* webpackChunkName: "d3-canvas" */
+      "../components/D3Canvas.vue"
+    ),
+});
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
