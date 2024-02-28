@@ -5,6 +5,8 @@
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
+const d3Canvas = ref<Record<any, any>>({});
+
 // node의 타입
 type Node = {
   id: any;
@@ -44,24 +46,23 @@ const links = ref<Link[]>([
     target: 2,
   },
 ]);
-// draw
-const updateCanvas = (scale = 1, translate = [0, 0]) => {
-  const canvas = window.document.querySelector("canvas");
-  if (!canvas) return false;
-  const context = canvas.getContext("2d");
-  if (!context) return false;
-  const width = canvas.width;
-  const height = canvas.height;
-  context.clearRect(0, 0, width, height); // 캔버스 클리어
-  // context.save();
-  context.translate(translate[0], translate[1]);
-  context.scale(scale, scale);
-
-  // draw nodes
+// draw links
+const drawLinks = (context: any, links: any[]) => {
+  context.globalAlpha = 0.666;
+  context.strokeStyle = "#666";
+  context.beginPath();
+  links.forEach((d) => {
+    context.moveTo(d.source.x, d.source.y);
+    context.lineTo(d.target.x, d.target.y);
+  });
+  context.stroke();
+};
+// draw nodes
+const drawNodes = (context: any, nodes: any[]) => {
   context.fillStyle = "#ccc";
-  context.strokeStyle = "#fff";
+  context.strokeStyle = "#ccc";
   context.globalAlpha = 1;
-  nodes.value.forEach((d) => {
+  nodes.forEach((d) => {
     if (typeof d.x !== "number" || typeof d.y !== "number") return;
     context.beginPath();
     context.moveTo(d.x + 5, d.y);
@@ -69,16 +70,25 @@ const updateCanvas = (scale = 1, translate = [0, 0]) => {
     context.fill();
     context.stroke();
   });
-  context.stroke();
-  // draw links
-  context.globalAlpha = 0.6;
-  context.strokeStyle = "#999";
-  context.beginPath();
-  links.value.forEach((d) => {
-    context.moveTo(d.source.x, d.source.y);
-    context.lineTo(d.target.x, d.target.y);
-  });
-  context.stroke();
+};
+// draw
+const updateCanvas = () => {
+  const canvas = d3Canvas.value.canvas;
+  if (!canvas) return false;
+  const context = d3Canvas.value.context;
+  if (!context) return false;
+  const width = canvas.width;
+  const height = canvas.height;
+  context.clearRect(0, 0, width, height); // 캔버스 클리어
+  context.save(); // 없으면 마우스가 움직이는 대로 시점이 이동이 안됨
+
+  const transform = d3Canvas.value.transform;
+  context.translate(transform.x, transform.y);
+  context.scale(transform.k, transform.k);
+
+  drawLinks(context, links.value);
+  drawNodes(context, nodes.value);
+  context.restore(); // 없으면 마우스가 움직이는 대로 시점이 이동이 안됨
 };
 //
 const getForceCenter = () => {
@@ -102,9 +112,28 @@ const forceSimulation = () => {
     .on("tick", updateCanvas);
   return simulation;
 };
+// zoom
+const zoomed = (event: any) => {
+  d3Canvas.value.transform = event.transform;
+  updateCanvas();
+};
+const setupCanvas = () => {
+  const canvas = window.document.querySelector("canvas");
+  d3Canvas.value.canvas = canvas;
+  const context = canvas?.getContext("2d");
+  d3Canvas.value.context = context;
+  d3.select(canvas).call(d3Canvas.value.zoom); // bind zoom funtion
+  // initalize zoom
+  // d3.select(canvas).call(
+  //   d3Canvas.value.zoom.transform,
+  //   d3Canvas.value.transform
+  // );
+};
 onMounted(() => {
-  // simulation = forceSimulation();
+  d3Canvas.value.transform = d3.zoomIdentity.scale(1).translate(0, 0); // 가운데 좌표가 0, 0
+  d3Canvas.value.zoom = d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed);
   forceSimulation();
+  setupCanvas();
 });
 </script>
 
