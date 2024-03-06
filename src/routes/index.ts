@@ -32,12 +32,32 @@ route.push({
 });
 
 route.push({
+  name: "Music",
+  path: "/music",
+  component: () =>
+    import(
+      /* webpackChunkName: "Music" */
+      "../components/Music.vue"
+    ),
+});
+
+route.push({
   name: "Paik Nam-June",
   path: "/Paik-NamJune",
   component: () =>
     import(
       /* webpackChunkName: "PaikNamJune" */
       "../components/PaikNamJune.vue"
+    ),
+});
+
+route.push({
+  name: "Investing",
+  path: "/invest",
+  component: () =>
+    import(
+      /* webpackChunkName: "Trading" */
+      "../components/Trading.vue"
     ),
 });
 
