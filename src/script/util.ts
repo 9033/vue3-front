@@ -3,7 +3,7 @@ import { Content } from "../types/embed";
 type ToConvertContent = {
   type: string;
   url: string;
-  tags?: string;
+  tags: string;
 };
 
 export const convertToContent = ({
@@ -13,5 +13,8 @@ export const convertToContent = ({
 }: ToConvertContent): Content => ({
   type,
   url,
-  tags: (tags || "").split(" "),
+  tags: tags
+    .split(/\r?\n/)
+    .filter((x) => !!x)
+    .map((tag) => tag.trim()),
 });

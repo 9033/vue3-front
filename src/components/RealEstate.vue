@@ -8,8 +8,9 @@ const Embed = defineAsyncComponent(() => import("./Embed.vue"));
 const tags: Array<string> = `
   재개발
 `
-  .split(/\s+/)
-  .filter((x) => !!x);
+  .split(/\r?\n/)
+  .filter((x) => !!x)
+  .map((tag) => tag.trim());
 
 const contents: Content[] = [
   {

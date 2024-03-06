@@ -16,8 +16,9 @@ const tags: Array<string> = `
   Neuvillette
   Furina
 `
-  .split(/\s+/)
-  .filter((x) => !!x);
+  .split(/\r?\n/)
+  .filter((x) => !!x)
+  .map((tag) => tag.trim());
 
 const contents: Content[] = [
   {
@@ -28,7 +29,7 @@ const contents: Content[] = [
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/WR671Bs9tH0?si=yBo9Cj9b_2LmGAX-",
-    tags: "Neuvillette Furina",
+    tags: "Neuvillette\nFurina",
   },
   {
     type: "youtube",
@@ -38,62 +39,62 @@ const contents: Content[] = [
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/pEBl2Rk60TA?si=kUmM4ybEhGGloFBM",
-    tags: "Neuvillette Furina Lumine",
+    tags: "Neuvillette\nFurina\nLumine",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/KaCXs79zdls",
-    tags: "Lumine Nahida",
+    tags: "Lumine\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/jON5ZozLStw",
-    tags: "Lumine Nahida",
+    tags: "Lumine\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/hffiEkX95wA",
-    tags: "Klee Kaeya",
+    tags: "Klee\nKaeya",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/qhPv2m1iWI4",
-    tags: "Klee Kaeya",
+    tags: "Klee\nKaeya",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/CG0GC8rTqqE",
-    tags: "Aether Nahida",
+    tags: "Aether\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/sMBB15x8s4c",
-    tags: "Klee Nahida",
+    tags: "Klee\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/3r84Om3ylA8",
-    tags: "Lumine Nahida",
+    tags: "Lumine\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/Lh7J9fDIGQk",
-    tags: "Klee Nahida",
+    tags: "Klee\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/6LxZt2mElhA",
-    tags: "Paimon Nahida",
+    tags: "Paimon\nNahida",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/4y8rDczyY3w",
-    tags: "Kokomi Klee",
+    tags: "Kokomi\nKlee",
   },
   {
     type: "youtube",
     url: "https://www.youtube.com/embed/aAeGYsUs5lo",
-    tags: "Lumine Nahida",
+    tags: "Lumine\nNahida",
   },
 ].map(convertToContent);
 </script>
