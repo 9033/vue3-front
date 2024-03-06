@@ -32,6 +32,16 @@ route.push({
 });
 
 route.push({
+  name: "Paik Nam-June",
+  path: "/Paik-NamJune",
+  component: () =>
+    import(
+      /* webpackChunkName: "PaikNamJune" */
+      "../components/PaikNamJune.vue"
+    ),
+});
+
+route.push({
   name: "Genshin Impact",
   path: "/genshin-impact",
   component: () =>
