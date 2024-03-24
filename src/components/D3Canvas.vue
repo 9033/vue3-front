@@ -5,17 +5,26 @@
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
+/**
+ * 연관된 변수를 모음
+ */
 const d3Canvas = ref<Record<any, any>>({});
 
-// node의 타입
+/**
+ * node의 타입
+ */
 type Node = {
   id: any;
 } & d3.SimulationNodeDatum;
 
-// link의 타입
+/**
+ * link의 타입
+ */
 type Link = d3.SimulationLinkDatum<any>;
 
-// 노드
+/**
+ * 노드
+ */
 const nodes = ref<Node[]>([
   {
     id: 0,
@@ -35,7 +44,10 @@ const nodes = ref<Node[]>([
   //   }))
   // );
 ]);
-// 링크
+
+/**
+ * 간선
+ */
 const links = ref<Link[]>([
   {
     source: 0,
@@ -46,7 +58,10 @@ const links = ref<Link[]>([
     target: 2,
   },
 ]);
-// draw links
+
+/**
+ * draw links
+ */
 const drawLinks = (context: any, links: any[]) => {
   context.globalAlpha = 0.666;
   context.strokeStyle = "#666";
@@ -57,7 +72,12 @@ const drawLinks = (context: any, links: any[]) => {
   });
   context.stroke();
 };
-// draw nodes
+
+/**
+ * draw nodes
+ * @description
+ * x, y좌표가 지정된 node만 그림
+ */
 const drawNodes = (context: any, nodes: any[]) => {
   context.fillStyle = "#ccc";
   context.strokeStyle = "#ccc";
@@ -71,7 +91,10 @@ const drawNodes = (context: any, nodes: any[]) => {
     context.stroke();
   });
 };
-// draw
+
+/**
+ * draw
+ */
 const updateCanvas = () => {
   const canvas = d3Canvas.value.canvas;
   if (!canvas) return false;
@@ -90,7 +113,12 @@ const updateCanvas = () => {
   drawNodes(context, nodes.value);
   context.restore(); // 없으면 마우스가 움직이는 대로 시점이 이동이 안됨
 };
-//
+
+/**
+ * get point of force center
+ * @description
+ * canvas의 중심 좌표 리턴
+ */
 const getForceCenter = () => {
   const canvas = window.document.querySelector("canvas");
   if (!canvas) return {};
@@ -100,8 +128,12 @@ const getForceCenter = () => {
     y: rect.height / 2,
   };
 };
-// new force simulation
-// let simulation;
+
+/**
+ * set new force simulation
+ * @description
+ * x, y 좌표를 자동으로 지정한다.
+ */
 const forceSimulation = () => {
   const forcecenter = getForceCenter();
   const simulation = d3
@@ -112,11 +144,18 @@ const forceSimulation = () => {
     .on("tick", updateCanvas);
   return simulation;
 };
-// zoom
+
+/**
+ * zoom
+ * @description
+ * zoom 이벤트가 발생했을때 실행
+ */
 const zoomed = (event: any) => {
   d3Canvas.value.transform = event.transform;
   updateCanvas();
 };
+
+/** setupCanvas */
 const setupCanvas = () => {
   const canvas = window.document.querySelector("canvas");
   d3Canvas.value.canvas = canvas;
@@ -129,6 +168,7 @@ const setupCanvas = () => {
   //   d3Canvas.value.transform
   // );
 };
+
 onMounted(() => {
   d3Canvas.value.transform = d3.zoomIdentity.scale(1).translate(0, 0); // 가운데 좌표가 0, 0
   d3Canvas.value.zoom = d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed);
