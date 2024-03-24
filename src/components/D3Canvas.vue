@@ -8,7 +8,10 @@ import * as d3 from "d3";
 /**
  * 연관된 변수를 모음
  */
-const d3Canvas = ref<Record<any, any>>({});
+const d3Canvas = ref<Record<any, any>>({
+  radius: 10,
+  status: "", // drag와 zoom이 동시에 동작하는 것을 방지
+});
 
 /**
  * node의 타입
@@ -88,8 +91,8 @@ const drawNodes = (context: any, nodes: any[]) => {
     })
     .forEach((d) => {
       context.beginPath();
-      context.moveTo(d.x + 5, d.y);
-      context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
+      context.moveTo(d.x, d.y);
+      context.arc(d.x, d.y, d3Canvas.value.radius, 0, 2 * Math.PI);
       context.fill();
       context.stroke();
     });
@@ -142,7 +145,10 @@ const forceSimulation = () => {
   const simulation = d3
     .forceSimulation(nodes.value)
     .force("charge", d3.forceManyBody())
-    .force("link", d3.forceLink(links.value))
+    .force(
+      "link",
+      d3.forceLink(links.value).distance(() => d3Canvas.value.radius * 12)
+    )
     .force("center", d3.forceCenter(forcecenter.x, forcecenter.y))
     .on("tick", updateCanvas);
   return simulation;
@@ -154,8 +160,26 @@ const forceSimulation = () => {
  * zoom 이벤트가 발생했을때 실행
  */
 const zoomed = (event: any) => {
+  if (d3Canvas.value.status === "drag") return;
   d3Canvas.value.transform = event.transform;
   updateCanvas();
+};
+
+/**
+ * canvas에서 클릭한 지점을 중심으로 일정 거리안에서 가장 가까운 노드
+ * @description
+ * - popup, drag일때 사용됨
+ * - zoom으로 변경된 스케일과 위치 계산
+ * */
+const closestNode = (event: any) => {
+  // console.log("closestNode", event);
+  const tx = d3Canvas.value.transform.invertX(event.x);
+  const ty = d3Canvas.value.transform.invertY(event.y);
+  const node = d3.least(nodes.value, ({ x = Infinity, y = Infinity }) => {
+    const dist2 = (x - tx) ** 2 + (y - ty) ** 2;
+    if (dist2 < d3Canvas.value.radius ** 2) return dist2;
+  });
+  return node;
 };
 
 /** setupCanvas */
@@ -164,20 +188,49 @@ const setupCanvas = () => {
   d3Canvas.value.canvas = canvas;
   const context = canvas?.getContext("2d");
   d3Canvas.value.context = context;
-  d3.select(canvas).call(d3Canvas.value.zoom); // bind zoom funtion
-  // initalize zoom
-  // d3.select(canvas).call(
-  //   d3Canvas.value.zoom.transform,
-  //   d3Canvas.value.transform
-  // );
+  d3Canvas.value.drag = d3
+    .drag()
+    .subject(closestNode)
+    .on("start", dragStart)
+    .on("drag", dragging)
+    .on("end", dragEnd);
+  d3.select(canvas)
+    .call(d3Canvas.value.drag as any)
+    .call(d3Canvas.value.zoom);
 };
 
 onMounted(() => {
   d3Canvas.value.transform = d3.zoomIdentity.scale(1).translate(0, 0); // 가운데 좌표가 0, 0
   d3Canvas.value.zoom = d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed);
-  forceSimulation();
+  d3Canvas.value.forceSimulation = forceSimulation();
   setupCanvas();
 });
+
+// drag
+/** drag 시작 */
+const dragStart = (event: any) => {
+  // console.log("dragStart", { event });
+  d3Canvas.value.status = "drag";
+  if (!event.active) d3Canvas.value.forceSimulation.alphaTarget(0.3).restart(); // 이거 없으면 drag가 멈춤
+  event.subject.fx = d3Canvas.value.transform.invertX(event.subject.x);
+  event.subject.fy = d3Canvas.value.transform.invertY(event.subject.y);
+};
+/** drag 하는 중 */
+const dragging = (event: any) => {
+  // console.log("dragging", { event });
+  event.subject.fx = d3Canvas.value.transform.invertX(event.x);
+  event.subject.fy = d3Canvas.value.transform.invertY(event.y);
+};
+/** drop */
+const dragEnd = (event: any) => {
+  // console.log("dragEnd", { event });
+  if (!event.active) d3Canvas.value.forceSimulation.alphaTarget(0); // 이거 없으면 drag가 멈춤
+  event.subject.x = d3Canvas.value.transform.invertX(event.x);
+  event.subject.y = d3Canvas.value.transform.invertY(event.y);
+  event.subject.fx = null;
+  event.subject.fy = null;
+  d3Canvas.value.status = "dragEnd";
+};
 </script>
 
 <template>
