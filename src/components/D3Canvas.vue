@@ -82,14 +82,17 @@ const drawNodes = (context: any, nodes: any[]) => {
   context.fillStyle = "#ccc";
   context.strokeStyle = "#ccc";
   context.globalAlpha = 1;
-  nodes.forEach((d) => {
-    if (typeof d.x !== "number" || typeof d.y !== "number") return;
-    context.beginPath();
-    context.moveTo(d.x + 5, d.y);
-    context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
-    context.fill();
-    context.stroke();
-  });
+  nodes
+    .filter((d) => {
+      return typeof d?.x === "number" && typeof d?.y === "number";
+    })
+    .forEach((d) => {
+      context.beginPath();
+      context.moveTo(d.x + 5, d.y);
+      context.arc(d.x, d.y, 5, 0, 2 * Math.PI);
+      context.fill();
+      context.stroke();
+    });
 };
 
 /**
