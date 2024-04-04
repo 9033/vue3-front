@@ -12,6 +12,16 @@ route.push({
 });
 
 route.push({
+  name: "Yaml",
+  path: "/yaml",
+  component: () =>
+    import(
+      /* webpackChunkName: "Yaml" */
+      "../components/Yaml.vue"
+    ),
+});
+
+route.push({
   name: "Real estate",
   path: "/real-estate",
   component: () =>
