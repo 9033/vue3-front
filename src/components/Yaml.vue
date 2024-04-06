@@ -10,13 +10,56 @@
       disabled
     ></textarea>
     <div>
-      <div v-for="parameter in templateData?.parameters ?? []">
+      <div
+        class="form"
+        v-for="resource in Object.keys(templateData?.resources ?? {})"
+      >
+        <label>resource</label>
+        <input type="string" :value="resource" disabled />
+        <label>type</label>
+        <select
+          :value="templateData?.resources?.[resource]?.type ?? ''"
+          disabled
+        >
+          <option value="">--Please choose an option--</option>
+          <option value="OS::Nova::Server">OS::Nova::Server</option>
+          <option value="OS::Cinder::Volume">OS::Cinder::Volume</option>
+        </select>
+        <template
+          v-for="property in [
+            'name',
+            'image',
+            'flavor',
+            'networks',
+            'key_name',
+          ]"
+        >
+          <template
+            v-if="
+              typeof templateData?.resources?.[resource]?.properties?.[
+                property
+              ] === 'string'
+            "
+          >
+            <label>{{ property }}</label>
+            <input
+              type="string"
+              disabled
+              :value="
+                templateData?.resources?.[resource]?.properties?.[property] ??
+                ''
+              "
+            />
+          </template>
+        </template>
+      </div>
+      <!-- <div v-for="parameter in templateData?.parameters ?? []">
         <label>{{ parameter.label }}</label>
         <input
           :type="inputType(parameter?.type) ?? 'string'"
           :placeholder="parameter.description ?? ''"
         />
-      </div>
+      </div> -->
       <!-- <div>
         <label>User Name:</label>
         <input
@@ -41,23 +84,31 @@ import { computed, onMounted, ref } from "vue";
 // import yaml from "js-yaml";
 import { yaml2obj, inputType } from "../script/yaml";
 
-const YAML2 = `heat_template_version: 2016-10-14
+const YAML2 = `heat_template_version: 2021-04-16
 
-parameters:
-  # declaration of input parameters  
-  user_name:
-    type: string
-    label: User Name
-    description: User name to be configured for the application    
-    constraints:
-      - length: { min: 6, max: 8 }
-        description: User name must be between 6 and 8 characters
-      - allowed_pattern: "[A-Z]+[a-zA-Z0-9]*"
-        description: User name must start with an uppercase character
-  port_number:
-    type: number
-    label: Port Number
-    description: Port number to be configured for the web server
+resources:
+  my_instance:
+    type: OS::Nova::Server
+    properties:
+      name: instance-1
+      image: image-1
+      flavor: flavor-1
+      networks:
+        - network: network-1
+      key_name: ssh-1
+      block_device_mapping: [
+        {
+          device_name: vda,
+          volume_id: { get_resource: my_volume},
+          delete_on_termination: true,
+        },
+      ]
+  
+  my_volume:
+    type: OS::Cinder::Volume
+    properties:
+      name: volumn-1
+      size: 20
 `;
 
 /** heat template */
@@ -156,5 +207,13 @@ onMounted(() => {
   > * {
     width: calc(100% / 3 - 8px);
   }
+}
+div.form {
+  > * {
+    width: 100%;
+  }
+}
+div.form:not(:last-child) {
+  margin-bottom: 12px;
 }
 </style>
