@@ -26,31 +26,73 @@
           <option value="OS::Cinder::Volume">OS::Cinder::Volume</option>
         </select>
         <template
-          v-for="property in [
-            'name',
-            'image',
-            'flavor',
-            'networks',
-            'key_name',
-          ]"
+          v-for="property in Object.keys(
+            templateData?.resources?.[resource]?.properties ?? {}
+          )"
         >
-          <template
-            v-if="
-              typeof templateData?.resources?.[resource]?.properties?.[
-                property
-              ] === 'string'
+          <template v-if="property === 'networks'">
+            <label>{{ property }}</label>
+            <template
+              v-for="_property in templateData?.resources?.[resource]
+                ?.properties?.[property] ?? []"
+            >
+              <input type="string" disabled :value="_property?.network ?? ''" />
+            </template>
+          </template>
+          <template v-else-if="property === 'block_device_mapping'">
+            <label>{{ property }}</label>
+            <template
+              v-for="_property in templateData?.resources?.[resource]
+                ?.properties?.[property] ?? []"
+            >
+              <Property property="device_name" :properties="_property" />
+              <Property
+                property="delete_on_termination"
+                :properties="_property"
+              />
+              <label>volume_id</label>
+              <template v-if="typeof _property?.volume_id === 'object'">
+                <input
+                  type="string"
+                  disabled
+                  :value="_property?.volume_id?.get_resource"
+                />
+              </template>
+              <template v-else>
+                <input
+                  type="string"
+                  disabled
+                  :value="_property?.volume_id ?? ''"
+                />
+              </template>
+            </template>
+          </template>
+          <template v-else>
+            <Property
+              :type="
+                typeof templateData?.resources?.[resource]?.properties?.[
+                  property
+                ]
+              "
+              :property="property"
+              :properties="templateData?.resources?.[resource]?.properties"
+            />
+          </template>
+          <!-- <template
+            v-else-if="
+              Array.isArray(
+                templateData?.resources?.[resource]?.properties?.[property]
+              )
             "
           >
             <label>{{ property }}</label>
-            <input
-              type="string"
-              disabled
-              :value="
-                templateData?.resources?.[resource]?.properties?.[property] ??
-                ''
-              "
-            />
-          </template>
+            <template
+              v-for="property1 in templateData?.resources?.[resource]
+                ?.properties?.[property] ?? []"
+            >
+              <input type="string" disabled :value="property1?.network ?? ''" />
+            </template>
+          </template> -->
         </template>
       </div>
       <!-- <div v-for="parameter in templateData?.parameters ?? []">
@@ -80,9 +122,18 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  onMounted,
+  ref,
+} from "vue";
 // import yaml from "js-yaml";
 import { yaml2obj, inputType } from "../script/yaml";
+
+const Property = defineAsyncComponent(() => import("./yaml/Property.vue"));
 
 const YAML2 = `heat_template_version: 2021-04-16
 
@@ -212,6 +263,10 @@ div.form {
   > * {
     width: 100%;
   }
+}
+input,
+label {
+  width: 100%;
 }
 div.form:not(:last-child) {
   margin-bottom: 12px;
