@@ -20,7 +20,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 
 const props = defineProps([
   "property",
