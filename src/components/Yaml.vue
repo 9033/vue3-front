@@ -49,6 +49,24 @@
               />
             </template>
           </template>
+          <template v-else-if="property === 'external_gateway_info'">
+            <label>{{ property }}</label>
+            <template
+              v-for="_property in Object.keys(
+                templateData?.resources?.[resource]?.properties?.[property] ??
+                  {}
+              )"
+            >
+              <Property
+                property="network"
+                :properties="
+                  templateData?.resources?.[resource]?.properties?.[property]
+                "
+                :resources="resources"
+                disabled
+              />
+            </template>
+          </template>
           <template v-else-if="property === 'block_device_mapping'">
             <label>{{ property }}</label>
             <template
