@@ -21,17 +21,15 @@ const click = (e: Event, s: string) => {
 };
 /* 새 log를 표시 */
 const timeStamp = ref<number>(0);
-const _interval = ref<NodeJS.Timeout>();
+const intervalId = ref<number>(0);
 onMounted(() => {
-  if (!_interval.value) {
-    _interval.value = setInterval(() => {
-      const d = new Date();
-      timeStamp.value = d.valueOf();
-    }, 100);
-  }
+  intervalId.value = window.setInterval(() => {
+    const d = new Date();
+    timeStamp.value = d.valueOf();
+  }, 100);
 });
 onUnmounted(() => {
-  if (_interval.value) clearInterval(_interval.value);
+  window.clearInterval(intervalId.value);
 });
 </script>
 
