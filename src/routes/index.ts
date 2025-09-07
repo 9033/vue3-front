@@ -12,6 +12,16 @@ route.push({
 });
 
 route.push({
+  name: "stopPropagation",
+  path: "/event",
+  component: () =>
+    import(
+      /* webpackChunkName: "Event" */
+      "../components/Event.vue"
+    ),
+});
+
+route.push({
   name: "Yaml",
   path: "/yaml",
   component: () =>
