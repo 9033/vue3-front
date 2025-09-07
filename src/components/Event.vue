@@ -107,7 +107,8 @@ div.main {
   height: 400px;
   width: 400px;
   align-content: center;
-  justify-items: center;
+  justify-items: center; /* 일부 브라우저는 display: grid가 필요 */
+  display: grid; /* for firefox safari */
   cursor: pointer;
   > div {
     background-color: chocolate;
