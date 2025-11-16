@@ -9,7 +9,7 @@
       :value="json"
       disabled
     ></textarea>
-    <Value v-if="true" :value="templateData"></Value>
+    <Value v-if="true" :value="templateData" disabled></Value>
     <!-- <div v-for="[key, value] in Object.entries(templateData)">
       <label>{{ key }}</label>
       <Value :value="value"></Value>
