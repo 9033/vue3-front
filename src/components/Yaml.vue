@@ -9,7 +9,12 @@
       :value="json"
       disabled
     ></textarea>
-    <div>
+    <Value v-if="true" :value="templateData"></Value>
+    <!-- <div v-for="[key, value] in Object.entries(templateData)">
+      <label>{{ key }}</label>
+      <Value :value="value"></Value>
+    </div> -->
+    <div v-else>
       <div
         class="form"
         v-for="resource in Object.keys(templateData?.resources ?? {})"
@@ -150,6 +155,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref } from "vue";
 import { yaml2obj } from "../script/yaml";
+import Value from "./yaml/Value.vue";
 
 const Property = defineAsyncComponent(() => import("./yaml/Property.vue"));
 
