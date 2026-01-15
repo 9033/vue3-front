@@ -13,10 +13,12 @@ onMounted(() => {
   if(routes?.[0])router.push(routes[0])
   */
 });
+
+const showMenus = false;
 </script>
 
 <template>
-  <div class="route">
+  <div v-if="showMenus" class="route">
     <template v-for="route in routes" :key="route.path">
       <router-link :to="route" v-if="route.name">
         <button
@@ -28,7 +30,14 @@ onMounted(() => {
       </router-link>
     </template>
   </div>
-  <router-view></router-view>
+  <div
+    class="contents"
+    :class="{
+      'default-page-margin': _route?.meta?.defaultPageMargin !== false,
+    }"
+  >
+    <router-view></router-view>
+  </div>
 </template>
 
 <style scoped>

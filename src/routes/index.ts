@@ -1,4 +1,7 @@
 import { RouteRecordRaw } from "vue-router";
+/*
+meta.defaultPageMargin 기본값: undefined
+*/
 const route = [];
 
 route.push({
@@ -59,6 +62,19 @@ route.push({
       /* webpackChunkName: "Music" */
       "../components/Music.vue"
     ),
+});
+
+route.push({
+  name: "Car Budget",
+  path: "/car-budget",
+  component: () =>
+    import(
+      /* webpackChunkName: "CarBudget" */
+      "../components/CarBudget.vue"
+    ),
+  meta: {
+    defaultPageMargin: false,
+  },
 });
 
 route.push({
