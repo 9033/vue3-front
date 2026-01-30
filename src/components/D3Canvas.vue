@@ -8,7 +8,16 @@ import * as d3 from "d3";
 /**
  * 연관된 변수를 모음
  */
-const d3Canvas = ref<Record<any, any>>({
+const d3Canvas = ref<
+  Record<any, any> & {
+    canvas?: HTMLCanvasElement | null;
+    context?: CanvasRenderingContext2D | null;
+    transform?: d3.ZoomTransform;
+    drag?: d3.DragBehavior<HTMLCanvasElement, unknown, unknown>;
+    zoom?: d3.ZoomBehavior<HTMLCanvasElement, unknown>;
+    forceSimulation?: d3.Simulation<Node, undefined>;
+  }
+>({
   radius: 10,
   status: "", // drag와 zoom이 동시에 동작하는 것을 방지
 });
@@ -65,7 +74,7 @@ const links = ref<Link[]>([
 /**
  * draw links
  */
-const drawLinks = (context: any, links: any[]) => {
+const drawLinks = (context: CanvasRenderingContext2D, links: Link[]) => {
   context.globalAlpha = 0.666;
   context.strokeStyle = "#666";
   context.beginPath();
@@ -81,18 +90,24 @@ const drawLinks = (context: any, links: any[]) => {
  * @description
  * x, y좌표가 지정된 node만 그림
  */
-const drawNodes = (context: any, nodes: any[]) => {
+const drawNodes = (context: CanvasRenderingContext2D, nodes: Node[]) => {
   context.fillStyle = "#ccc";
   context.strokeStyle = "#ccc";
   context.globalAlpha = 1;
   nodes
     .filter((d) => {
-      return typeof d?.x === "number" && typeof d?.y === "number";
+      return typeof d.x === "number" && typeof d.y === "number";
     })
     .forEach((d) => {
       context.beginPath();
-      context.moveTo(d.x, d.y);
-      context.arc(d.x, d.y, d3Canvas.value.radius, 0, 2 * Math.PI);
+      context.moveTo(Number(d.x), Number(d.y));
+      context.arc(
+        Number(d.x),
+        Number(d.y),
+        d3Canvas.value.radius,
+        0,
+        2 * Math.PI,
+      );
       context.fill();
       context.stroke();
     });
@@ -112,8 +127,10 @@ const updateCanvas = () => {
   context.save(); // 없으면 마우스가 움직이는 대로 시점이 이동이 안됨
 
   const transform = d3Canvas.value.transform;
-  context.translate(transform.x, transform.y);
-  context.scale(transform.k, transform.k);
+  if (transform) {
+    context.translate(transform.x, transform.y);
+    context.scale(transform.k, transform.k);
+  }
 
   drawLinks(context, links.value);
   drawNodes(context, nodes.value);
@@ -143,11 +160,11 @@ const getForceCenter = () => {
 const forceSimulation = () => {
   const forcecenter = getForceCenter();
   const simulation = d3
-    .forceSimulation(nodes.value)
+    .forceSimulation<Node>(nodes.value)
     .force("charge", d3.forceManyBody())
     .force(
       "link",
-      d3.forceLink(links.value).distance(() => d3Canvas.value.radius * 12)
+      d3.forceLink(links.value).distance(() => d3Canvas.value.radius * 12),
     )
     .force("center", d3.forceCenter(forcecenter.x, forcecenter.y))
     .on("tick", updateCanvas);
@@ -173,6 +190,7 @@ const zoomed = (event: any) => {
  * */
 const closestNode = (event: any) => {
   // console.log("closestNode", event);
+  if (!d3Canvas.value.transform) return undefined;
   const tx = d3Canvas.value.transform.invertX(event.x);
   const ty = d3Canvas.value.transform.invertY(event.y);
   const node = d3.least(nodes.value, ({ x = Infinity, y = Infinity }) => {
@@ -189,19 +207,23 @@ const setupCanvas = () => {
   const context = canvas?.getContext("2d");
   d3Canvas.value.context = context;
   d3Canvas.value.drag = d3
-    .drag()
+    .drag<HTMLCanvasElement, unknown>()
     .subject(closestNode)
     .on("start", dragStart)
     .on("drag", dragging)
     .on("end", dragEnd);
-  d3.select(canvas)
-    .call(d3Canvas.value.drag as any)
-    .call(d3Canvas.value.zoom);
+  if (canvas && d3Canvas.value.drag)
+    d3.select(canvas).call(d3Canvas.value.drag);
+  if (canvas && d3Canvas.value.zoom)
+    d3.select(canvas).call(d3Canvas.value.zoom);
 };
 
 onMounted(() => {
   d3Canvas.value.transform = d3.zoomIdentity.scale(1).translate(0, 0); // 가운데 좌표가 0, 0
-  d3Canvas.value.zoom = d3.zoom().scaleExtent([0.5, 10]).on("zoom", zoomed);
+  d3Canvas.value.zoom = d3
+    .zoom<HTMLCanvasElement, unknown>()
+    .scaleExtent([0.5, 10])
+    .on("zoom", zoomed);
   d3Canvas.value.forceSimulation = forceSimulation();
   setupCanvas();
 });
@@ -211,22 +233,30 @@ onMounted(() => {
 const dragStart = (event: any) => {
   // console.log("dragStart", { event });
   d3Canvas.value.status = "drag";
-  if (!event.active) d3Canvas.value.forceSimulation.alphaTarget(0.3).restart(); // 이거 없으면 drag가 멈춤
-  event.subject.fx = d3Canvas.value.transform.invertX(event.subject.x);
-  event.subject.fy = d3Canvas.value.transform.invertY(event.subject.y);
+  if (!event.active && d3Canvas.value.forceSimulation)
+    d3Canvas.value.forceSimulation.alphaTarget(0.3).restart(); // 이거 없으면 drag가 멈춤
+  if (d3Canvas.value.transform) {
+    event.subject.fx = d3Canvas.value.transform.invertX(event.subject.x);
+    event.subject.fy = d3Canvas.value.transform.invertY(event.subject.y);
+  }
 };
 /** drag 하는 중 */
 const dragging = (event: any) => {
   // console.log("dragging", { event });
-  event.subject.fx = d3Canvas.value.transform.invertX(event.x);
-  event.subject.fy = d3Canvas.value.transform.invertY(event.y);
+  if (d3Canvas.value.transform) {
+    event.subject.fx = d3Canvas.value.transform.invertX(event.x);
+    event.subject.fy = d3Canvas.value.transform.invertY(event.y);
+  }
 };
 /** drop */
 const dragEnd = (event: any) => {
   // console.log("dragEnd", { event });
-  if (!event.active) d3Canvas.value.forceSimulation.alphaTarget(0); // 이거 없으면 drag가 멈춤
-  event.subject.x = d3Canvas.value.transform.invertX(event.x);
-  event.subject.y = d3Canvas.value.transform.invertY(event.y);
+  if (!event.active && d3Canvas.value.forceSimulation)
+    d3Canvas.value.forceSimulation.alphaTarget(0); // 이거 없으면 drag가 멈춤
+  if (d3Canvas.value.transform) {
+    event.subject.x = d3Canvas.value.transform.invertX(event.x);
+    event.subject.y = d3Canvas.value.transform.invertY(event.y);
+  }
   event.subject.fx = null;
   event.subject.fy = null;
   d3Canvas.value.status = "dragEnd";
