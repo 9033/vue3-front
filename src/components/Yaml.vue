@@ -32,7 +32,7 @@
         </select>
         <template
           v-for="property in Object.keys(
-            templateData?.resources?.[resource]?.properties ?? {}
+            templateData?.resources?.[resource]?.properties ?? {},
           )"
         >
           <template v-if="property === 'networks'">
@@ -54,7 +54,7 @@
             <template
               v-for="_property in Object.keys(
                 templateData?.resources?.[resource]?.properties?.[property] ??
-                  {}
+                  {},
               )"
             >
               <Property

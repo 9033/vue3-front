@@ -104,7 +104,9 @@ const contents: Content[] = [
     <header class="page-hero">
       <p class="page-kicker">Genshin Impact</p>
       <h1 class="page-title">원신 영상 모음</h1>
-      <p class="page-subtitle">태그와 페이지를 선택해 원하는 영상을 빠르게 찾아보세요.</p>
+      <p class="page-subtitle">
+        태그와 페이지를 선택해 원하는 영상을 빠르게 찾아보세요.
+      </p>
     </header>
 
     <section class="page-shell">

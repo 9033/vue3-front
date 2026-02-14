@@ -9,7 +9,9 @@
     <TabGroup>
       <TabList class="tab-list">
         <Tab v-slot="{ selected }" as="template">
-          <button :class="['tab', selected && 'tab-active']">자주 쓰는 페이지</button>
+          <button :class="['tab', selected && 'tab-active']">
+            자주 쓰는 페이지
+          </button>
         </Tab>
         <Tab v-slot="{ selected }" as="template">
           <button :class="['tab', selected && 'tab-active']">연습/예제</button>
@@ -44,27 +46,27 @@
 </template>
 
 <script setup lang="ts">
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/vue';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 
 const mainLinks = [
   {
-    title: '차량 가격 계산',
-    path: '/#/car-budget',
-    description: '자산과 연소득을 입력해 권장 차량 가격을 계산합니다.',
+    title: "차량 가격 계산",
+    path: "/#/car-budget",
+    description: "자산과 연소득을 입력해 권장 차량 가격을 계산합니다.",
   },
   {
-    title: '원신',
-    path: '/#/genshin-impact',
-    description: '원신 관련 즐겨보는 유튜브 동영상을 모아둔 페이지입니다.',
+    title: "원신",
+    path: "/#/genshin-impact",
+    description: "원신 관련 즐겨보는 유튜브 동영상을 모아둔 페이지입니다.",
   },
 ];
 
 const practiceLinks = [
   {
-    title: 'Form With Tab',
-    path: '/#/form-with-tab',
+    title: "Form With Tab",
+    path: "/#/form-with-tab",
     description:
-      '하위 컴포넌트 양식으로 데이터를 생성/수정하고 값 변경을 다루는 예제입니다.',
+      "하위 컴포넌트 양식으로 데이터를 생성/수정하고 값 변경을 다루는 예제입니다.",
   },
 ];
 </script>
@@ -122,7 +124,10 @@ const practiceLinks = [
   background: linear-gradient(165deg, #f8fbfa, #eef4f1);
   padding: 18px;
   min-height: 122px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .card:hover {

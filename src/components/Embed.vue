@@ -3,10 +3,7 @@
 테그 나 페이지 변경시 이미 로드된 섬네일이 다시 로드되지 않게 하려고 v-show 사용
 코드에 ''과 ,를 입력하는 수고를 덜기위해 데이터를 split로 배열로 변환
 */
-import {
-  RadioGroup,
-  RadioGroupOption,
-} from "@headlessui/vue";
+import { RadioGroup, RadioGroupOption } from "@headlessui/vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { Content } from "../types/embed.ts";
 import range from "../script/range";
@@ -26,7 +23,9 @@ const selectedTags = ref<Array<string>>([]);
 // 테그 변경
 const toggleSelectTag = (tag: string) => {
   if (selectedTags.value.includes(tag)) {
-    selectedTags.value = selectedTags.value.filter((selected) => selected !== tag);
+    selectedTags.value = selectedTags.value.filter(
+      (selected) => selected !== tag,
+    );
     return;
   }
   selectedTags.value.push(tag);
@@ -69,7 +68,7 @@ watch(selectedTags, () => {
 const paged_idx_of_contents = computed((): number[] => {
   return filtered_idx_of_contents.value.slice(
     (page.value - 1) * content_per_page.value,
-    page.value * content_per_page.value
+    page.value * content_per_page.value,
   );
 });
 
@@ -78,7 +77,7 @@ const list_page = computed((): number[] => {
   return range(
     1,
     Math.ceil(filtered_idx_of_contents.value.length / content_per_page.value) +
-      1
+      1,
   );
 });
 
@@ -141,7 +140,11 @@ onMounted(() => {
           as="template"
           v-slot="{ checked }"
         >
-          <button type="button" class="page-button" :class="{ 'selected-tag': checked }">
+          <button
+            type="button"
+            class="page-button"
+            :class="{ 'selected-tag': checked }"
+          >
             {{ _page }}
           </button>
         </RadioGroupOption>
