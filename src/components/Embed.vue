@@ -3,7 +3,11 @@
 테그 나 페이지 변경시 이미 로드된 섬네일이 다시 로드되지 않게 하려고 v-show 사용
 코드에 ''과 ,를 입력하는 수고를 덜기위해 데이터를 split로 배열로 변환
 */
-import { computed, onMounted, ref } from "vue";
+import {
+  RadioGroup,
+  RadioGroupOption,
+} from "@headlessui/vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { Content } from "../types/embed.ts";
 import range from "../script/range";
 const props = defineProps({
@@ -22,14 +26,10 @@ const selectedTags = ref<Array<string>>([]);
 // 테그 변경
 const toggleSelectTag = (tag: string) => {
   if (selectedTags.value.includes(tag)) {
-    // deselect
-    selectedTags.value = selectedTags.value.filter((t) => tag != t);
-  } else {
-    // select
-    selectedTags.value.push(tag);
+    selectedTags.value = selectedTags.value.filter((selected) => selected !== tag);
+    return;
   }
-  // 테그 변경시 1 페이지로 이동
-  page.value = 1;
+  selectedTags.value.push(tag);
 };
 
 // const showMethodOr = (content: Content) => {
@@ -38,6 +38,7 @@ const toggleSelectTag = (tag: string) => {
 
 // 컨텐츠가 선택된 테그에 전부 해당 하는지
 const showMethodAnd = (content: Content): boolean => {
+  if (selectedTags.value.length === 0) return true;
   return selectedTags.value.every((tag) => content.tags.includes(tag));
 };
 
@@ -59,6 +60,10 @@ const content_per_page = ref<number>(5);
 
 // 현체 페이지
 const page = ref<number>(1);
+watch(selectedTags, () => {
+  // 테그 변경시 1 페이지로 이동
+  page.value = 1;
+});
 
 // 페이지에 해당하는 컨텐츠의 인덱스 목록
 const paged_idx_of_contents = computed((): number[] => {
@@ -109,27 +114,42 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="list">
-    <button
-      v-for="tag in tags"
-      :key="tag"
-      :class="{ 'selected-tag': selectedTags.includes(tag) }"
-      @click="toggleSelectTag(tag)"
-    >
-      {{ tag }}
-    </button>
+  <div class="controls">
+    <div class="control-block">
+      <p class="control-label">태그 필터</p>
+      <ul class="tag-options">
+        <li v-for="tag in tags" :key="tag">
+          <button
+            type="button"
+            class="tag-option"
+            :class="{ 'selected-tag': selectedTags.includes(tag) }"
+            @click="toggleSelectTag(tag)"
+          >
+            {{ tag }}
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="control-block">
+      <p class="control-label">페이지</p>
+      <RadioGroup v-model="page" class="page-group">
+        <RadioGroupOption
+          v-for="_page in list_page"
+          :key="_page"
+          :value="_page"
+          as="template"
+          v-slot="{ checked }"
+        >
+          <button type="button" class="page-button" :class="{ 'selected-tag': checked }">
+            {{ _page }}
+          </button>
+        </RadioGroupOption>
+      </RadioGroup>
+    </div>
   </div>
-  <div class="list">
-    <button
-      v-for="_page in list_page"
-      :key="_page"
-      :class="{ 'selected-tag': _page === page }"
-      @click="page = _page"
-    >
-      {{ _page }}
-    </button>
-  </div>
-  <div class="list container-list">
+
+  <div class="container-list">
     <!-- <component :is="c"></component> -->
     <template v-for="idx in total_list_idx">
       <template v-if="contents[idx].type === 'youtube'">
@@ -151,9 +171,65 @@ onMounted(() => {
 
 <style scoped>
 .selected-tag {
-  color: red;
+  color: #fff;
+  background: #115e59;
+  border-color: #115e59;
 }
-.list > * {
-  margin: 8px;
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.control-block {
+  min-width: 240px;
+}
+
+.control-label {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag-option {
+  cursor: pointer;
+}
+
+.page-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-button {
+  min-width: 44px;
+}
+
+button {
+  border: 1px solid #9ca3af;
+  background: rgba(255, 255, 255, 0.72);
+  color: #1f2937;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  border-color: #115e59;
+  color: #115e59;
+  background: rgba(255, 255, 255, 0.9);
 }
 </style>

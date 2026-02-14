@@ -1,0 +1,46 @@
+.page-surface {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+  min-height: 100vh;
+  background: linear-gradient(170deg, #cfdad6 0%, #d9e2df 45%, #e3e9e6 100%);
+  border-radius: 20px;
+}
+
+.page-hero {
+  margin-bottom: 28px;
+}
+
+.page-kicker {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #115e59;
+}
+
+.page-title {
+  margin: 10px 0 8px;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  line-height: 1.15;
+  color: #1f2937;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: #374151;
+}
+
+.page-shell {
+  padding: 16px;
+  border: 1px solid #c7d2ce;
+  border-radius: 14px;
+  background: linear-gradient(165deg, #f8fbfa, #eef4f1);
+}
+
+@media (max-width: 640px) {
+  .page-surface {
+    padding-top: 32px;
+  }
+}

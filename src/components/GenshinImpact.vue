@@ -100,7 +100,19 @@ const contents: Content[] = [
 </script>
 
 <template>
-  <Embed :tags="tags" :contents="contents"></Embed>
+  <main class="page-surface">
+    <header class="page-hero">
+      <p class="page-kicker">Genshin Impact</p>
+      <h1 class="page-title">원신 영상 모음</h1>
+      <p class="page-subtitle">태그와 페이지를 선택해 원하는 영상을 빠르게 찾아보세요.</p>
+    </header>
+
+    <section class="page-shell">
+      <Embed :tags="tags" :contents="contents" />
+    </section>
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+@import "../styles/page-theme.css";
+</style>
