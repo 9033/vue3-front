@@ -58,76 +58,84 @@ const change = (draft: Partial<Paper>) => {
 <template>
   <Tab :tab="tab" :tabs="tabs" @change="tabChange" />
   <table>
-    <tr>
-      <td>data</td>
-      <td>
-        <div v-if="tab === 'Input1'">
+    <tbody>
+      <tr>
+        <td>data</td>
+        <td>
+          <div v-if="tab === 'Input1'">
+            <Input1 :data="data" @change="change" />
+          </div>
+          <div v-else-if="tab === 'Input2'">
+            <Input2 :data="data" @change="change" />
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>data2</td>
+        <td>
+          <div v-if="tab === 'Input1'">
+            <Input1 :data="data2" @change="change" />
+          </div>
+          <div v-else-if="tab === 'Input2'">
+            <Input2 :data="data2" @change="change" />
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>data</td>
+        <td>
+          <Result :data="data" />
+        </td>
+      </tr>
+      <tr>
+        <td>data2</td>
+        <td>
+          <Result :data="data2" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <th colspan="2">data</th>
+      </tr>
+      <tr>
+        <td>Input1</td>
+        <td>
           <Input1 :data="data" @change="change" />
-        </div>
-        <div v-else-if="tab === 'Input2'">
+        </td>
+      </tr>
+      <tr>
+        <td>Input2</td>
+        <td>
           <Input2 :data="data" @change="change" />
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>data2</td>
-      <td>
-        <div v-if="tab === 'Input1'">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <th colspan="2">data2</th>
+      </tr>
+      <tr>
+        <td>Input1</td>
+        <td>
           <Input1 :data="data2" @change="change" />
-        </div>
-        <div v-else-if="tab === 'Input2'">
+        </td>
+      </tr>
+      <tr>
+        <td>Input2</td>
+        <td>
           <Input2 :data="data2" @change="change" />
-        </div>
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td>data</td>
-      <td>
-        <Result :data="data" />
-      </td>
-    </tr>
-    <tr>
-      <td>data2</td>
-      <td>
-        <Result :data="data2" />
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <th colspan="2">data</th>
-    </tr>
-    <tr>
-      <td>Input1</td>
-      <td>
-        <Input1 :data="data" @change="change" />
-      </td>
-    </tr>
-    <tr>
-      <td>Input2</td>
-      <td>
-        <Input2 :data="data" @change="change" />
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <th colspan="2">data2</th>
-    </tr>
-    <tr>
-      <td>Input1</td>
-      <td>
-        <Input1 :data="data2" @change="change" />
-      </td>
-    </tr>
-    <tr>
-      <td>Input2</td>
-      <td>
-        <Input2 :data="data2" @change="change" />
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </tbody>
   </table>
   <!-- <component :is="tab" :data="data" @change="change"></component> -->
   <!-- <Input1 v-if="tab === 'Input1'" :data="data" @change="change"/>

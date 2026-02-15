@@ -8,14 +8,14 @@ const assetValue = computed(() => Number(asset.value) || 0);
 const incomeValue = computed(() => Number(income.value) || 0);
 
 const recommendation = computed(
-  () => assetValue.value * 0.05 + incomeValue.value * 0.5
+  () => assetValue.value * 0.05 + incomeValue.value * 0.5,
 );
 
 const formattedRecommendation = computed(() =>
   new Intl.NumberFormat("ko-KR", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 1,
-  }).format(recommendation.value)
+  }).format(recommendation.value),
 );
 </script>
 
@@ -95,7 +95,8 @@ const formattedRecommendation = computed(() =>
   content: "";
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(
+  background-image:
+    linear-gradient(
       120deg,
       rgba(230, 167, 86, 0.08) 0%,
       rgba(47, 111, 115, 0.08) 100%
@@ -166,7 +167,9 @@ input {
   border: 1px solid rgba(27, 28, 29, 0.15);
   font-size: 16px;
   background: #fff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   color: black;
 }
 
