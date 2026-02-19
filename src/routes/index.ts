@@ -98,6 +98,16 @@ route.push({
 });
 
 route.push({
+  name: "Trading Chart",
+  path: "/trading-chart",
+  component: () =>
+    import(
+      /* webpackChunkName: "ChartEvents" */
+      "../components/ChartEvents.vue"
+    ),
+});
+
+route.push({
   name: "Genshin Impact",
   path: "/genshin-impact",
   component: () =>
