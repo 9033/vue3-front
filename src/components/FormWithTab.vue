@@ -42,7 +42,8 @@ const data2 = ref<Paper>({
   age: 0,
 });
 
-// data와 data2에 값을 설정
+// 의도적으로 data와 data2를 함께 갱신해서
+// Partial 타입 상태와 완전한 타입 상태를 같은 입력으로 비교한다.
 const change = (draft: Partial<Paper>) => {
   data.value = {
     ...data.value,
