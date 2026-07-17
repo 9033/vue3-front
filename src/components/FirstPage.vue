@@ -68,6 +68,11 @@ const practiceLinks = [
     description:
       "하위 컴포넌트 양식으로 데이터를 생성/수정하고 값 변경을 다루는 예제입니다.",
   },
+  {
+    title: "store tab input",
+    path: "/#/store-tab-input",
+    description: "store를 이용해서 입력은 child 컴포넌트에서 받고 parent 컴포넌트에서 데이터 조회",
+  },
 ];
 </script>
 

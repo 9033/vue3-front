@@ -107,6 +107,16 @@ route.push({
     ),
 });
 
+route.push({
+  name: "store-tab-input",
+  path: "/store-tab-input",
+  component: () =>
+    import(
+      /* webpackChunkName: "storeTabs" */
+      "../pages/Store.vue"
+    ),
+});
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
