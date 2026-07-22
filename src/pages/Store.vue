@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, h } from "vue";
+import { computed, defineComponent, h, onBeforeUnmount } from "vue";
 import { useStoreTabsStore } from "../stores/storeTab";
 import StoreTab1 from "./tabs/StoreTab1.vue";
 import StoreTab2 from "./tabs/StoreTab2.vue";
@@ -12,6 +12,9 @@ const comp = computed(() => {
     setup: () => () => h("a", "???"),
   });
 });
+onBeforeUnmount(()=>{
+  store.$reset()
+})
 </script>
 <template>
   <h3>입력은 child 컴포넌트에서 받고 parent 컴포넌트에서 데이터 조회</h3>
