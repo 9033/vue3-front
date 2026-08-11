@@ -117,6 +117,26 @@ route.push({
     ),
 });
 
+route.push({
+  name: "profit",
+  path: "/profit",
+  component: () =>
+    import(
+      /* webpackChunkName: "Profit" */
+      "../pages/profit/Profit.vue"
+    ),
+});
+
+route.push({
+  name: "wrapper",
+  path: "/wrapper",
+  component: () =>
+    import(
+      /* webpackChunkName: "Wrapper" */
+      "../pages/expose/Wrapper.vue"
+    ),
+});
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
