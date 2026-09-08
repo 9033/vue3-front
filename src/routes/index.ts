@@ -147,6 +147,16 @@ route.push({
     ),
 });
 
+route.push({
+  name: "capture",
+  path: "/capture",
+  component: () =>
+    import(
+      /* webpackChunkName: "Wish" */
+      "../pages/capture/Capture.vue"
+    ),
+});
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
