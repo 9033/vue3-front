@@ -137,6 +137,16 @@ route.push({
     ),
 });
 
+route.push({
+  name: "wish",
+  path: "/wish",
+  component: () =>
+    import(
+      /* webpackChunkName: "Wish" */
+      "../pages/genshin/Wish.vue"
+    ),
+});
+
 // route.push({
 //   name: 'Hello World',
 //   path: '/hello-world',
